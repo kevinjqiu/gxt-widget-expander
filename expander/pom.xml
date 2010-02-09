@@ -57,6 +57,15 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+    </resources>
     <outputDirectory>war/WEB-INF/classes</outputDirectory>
     <plugins>
       <plugin>
