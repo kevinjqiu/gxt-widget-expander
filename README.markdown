@@ -22,4 +22,8 @@ GXT Widget Expander is designed to tackle these problems and ultimately, allow r
     // Create a grid with the ColumnConfig list
     grid.addGridPlugin(expander);
 
+## GXT Maven Artifact ##
+As of this writing, GXT 2.1.0 isn't in maven central repo. To make the demo work, you need to download GXT from http://www.extjs.com/products/gxt/download.php, and install the jar file into the local repository:
+    mvn install:install-file -DgroupId=gxt -DartifactId=gxt -Dversion=2.1.0 -Dpackaging=jar -Dfile=gxt.jar
 
+If you decide to use a different groupId and artifactId than "gxt", make sure this is reflected in the demo project's pom.xml file.
