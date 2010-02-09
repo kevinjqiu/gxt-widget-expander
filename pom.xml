@@ -3,9 +3,9 @@
   <groupId>com.extjs.gxt.ui</groupId>
   <artifactId>expander-reactor</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <modules>
-  	<module>expander</module>
-  	<module>demo</module>
+    <module>expander</module>
+    <module>demo</module>
   </modules>
 </project>
