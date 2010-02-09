@@ -17,6 +17,33 @@ import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * This is adapted from {@link RowExpander}
+ * adding the ability to set a {@link WidgetRowRenderer}
+ * so that a widget can be embedded into the expanded
+ * row body
+ *
+ * Typical usage:
+ * <code>
+ * WidgetExpander expander = new WidgetExpander(new WidgetRowRenderer() {
+ *   public Widget render(BaseModel model, int rowIdx) {
+ *     // return a widget according to the model
+ *   }
+ * });
+ *
+ * List<ColumnConfig> cfgs = new ArrayList<ColumnConfig>();
+ * // setting up other columns
+ * cfgs.add(expander);
+ *
+ * Grid grid = new Grid(store, new ColumnModel(cfgs));
+ * grid.addGridPlugin(expander);
+ *
+ * </code>
+ *
+ * @author Kevin Qiu
+ *
+ * @param <T>
+ */
 public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements ComponentPlugin {
 
     /**

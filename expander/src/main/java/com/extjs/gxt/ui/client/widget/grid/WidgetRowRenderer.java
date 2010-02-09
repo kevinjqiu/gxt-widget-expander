@@ -3,6 +3,14 @@ package com.extjs.gxt.ui.client.widget.grid;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * This is a delegate that returns a widget according to
+ * the {@BaseModel} object to be rendered
+ *
+ * @author Kevin Qiu
+ *
+ * @param <T>
+ */
 public interface WidgetRowRenderer<T extends BaseModel> {
 
 
