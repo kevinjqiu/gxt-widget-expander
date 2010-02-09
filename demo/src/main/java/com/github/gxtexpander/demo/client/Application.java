@@ -10,8 +10,9 @@ import com.extjs.gxt.ui.client.widget.grid.WidgetExpander;
 import com.extjs.gxt.ui.client.widget.grid.WidgetRowRenderer;
 import com.github.gxtexpander.demo.client.models.DemoDataFactory;
 import com.github.gxtexpander.demo.client.models.User;
+import com.github.gxtexpander.demo.client.widgets.SkillWidget;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,7 +30,13 @@ public class Application implements EntryPoint {
         final WidgetExpander<User> expander = new WidgetExpander<User>(new WidgetRowRenderer<User>() {
 
             public Widget render(final User model, final int rowIdx) {
-                return new Label("" +  model.getLanguages());
+                final FlowPanel retval = new FlowPanel();
+
+                for (final String skill : model.getLanguages()) {
+                    retval.add(new SkillWidget(retval, skill));
+                }
+
+                return retval;
             }
         });
         cfg.add(expander);
