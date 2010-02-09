@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.extjs.gxt.ui</groupId>
   <artifactId>expander-reactor</artifactId>
@@ -8,4 +9,17 @@
     <module>expander</module>
     <module>demo</module>
   </modules>
+
+  <properties>
+
+    <!-- convenience to define GWT version in one place -->
+    <gwt.version>2.0.0</gwt.version>
+
+    <!--  tell the compiler we can use 1.5 -->
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
+
+    <gxt.version>2.1.0</gxt.version>
+  </properties>
+
 </project>
