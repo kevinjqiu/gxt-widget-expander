@@ -6,6 +6,9 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.core.DomQuery;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.ChangeEvent;
+import com.extjs.gxt.ui.client.data.ChangeListener;
+import com.extjs.gxt.ui.client.data.Model;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -44,7 +47,8 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @param <T>
  */
-public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements ComponentPlugin {
+public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements ComponentPlugin, ChangeListener {
+
 
     /**
      * Keep a reference to the grid the plugin is with.
@@ -148,6 +152,11 @@ public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements
 
         final int idx = row.dom.getPropertyInt("rowIndex");
         final ModelData model = _grid.getStore().getAt(idx);
+
+        if (model instanceof BaseModel) {
+            ((BaseModel) model).addChangeListener(this);
+        }
+
         final Element body = DomQuery.selectNode("div.x-grid3-row-body", row.dom);
         body.setInnerText("");  // otherwise, there's "${body}" text in the expanded cell
 
@@ -183,6 +192,29 @@ public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements
             collapseRow(row);
         }
         _grid.getView().calculateVBar(false);
+    }
+
+    /**
+     * When the model is changed, invalidate the cache.
+     */
+    public void modelChanged(final ChangeEvent event) {
+        final Model model = event.getSource();
+        invalidateCache(model);
+    }
+
+    /**
+     * Invalidate the cache at the {@link ModelData} object.
+     * @param model
+     */
+    public void invalidateCache(final ModelData model) {
+        _cachedWidgets.remove(model);
+    }
+
+    /**
+     * Invalidate all caches.
+     */
+    public void invalidateCache() {
+        _cachedWidgets.clear();
     }
 
 }
