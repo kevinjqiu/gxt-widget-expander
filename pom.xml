@@ -19,7 +19,7 @@
     <maven.compiler.source>1.5</maven.compiler.source>
     <maven.compiler.target>1.5</maven.compiler.target>
 
-    <gxt.version>2.1.0</gxt.version>
+    <gxt.version>2.1.1</gxt.version>
   </properties>
 
 </project>

@@ -50,171 +50,171 @@ import com.google.gwt.user.client.ui.Widget;
 public class WidgetExpander<T extends BaseModel> extends ColumnConfig implements ComponentPlugin, ChangeListener {
 
 
-    /**
-     * Keep a reference to the grid the plugin is with.
-     */
-    private Grid<T> _grid;
+	/**
+	 * Keep a reference to the grid the plugin is with.
+	 */
+	private Grid<T> _grid;
 
-    private WidgetRowRenderer<T> _renderer;
+	private WidgetRowRenderer<T> _renderer;
 
-    private final Map<ModelData, Widget> _cachedWidgets = new HashMap<ModelData, Widget>();
+	private final Map<ModelData, Widget> _cachedWidgets = new HashMap<ModelData, Widget>();
 
-    /**
-     * Constructor.
-     *
-     * @param renderer
-     */
-    public WidgetExpander(final WidgetRowRenderer<T> renderer) {
-        setHeader("");
-        setWidth(20);
-        setSortable(false);
-        setResizable(false);
-        setFixed(true);
-        setMenuDisabled(true);
-        setDataIndex("");
-        setId("expander");
+	/**
+	 * Constructor.
+	 *
+	 * @param renderer
+	 */
+	public WidgetExpander(final WidgetRowRenderer<T> renderer) {
+		setHeader("");
+		setWidth(20);
+		setSortable(false);
+		setResizable(false);
+		setFixed(true);
+		setMenuDisabled(true);
+		setDataIndex("");
+		setId("expander");
 
-        setRenderer(new GridCellRenderer<ModelData>() {
-            public String render(final ModelData model, final String property, final ColumnData d, final int rowIndex,
-                            final int colIndex, final ListStore<ModelData> store, final Grid<ModelData> grid) {
-                d.cellAttr = "rowspan='2'";
-                return "<div class='x-grid3-row-expander'>&#160;</div>";
-            }
-        });
+		setRenderer(new GridCellRenderer<ModelData>() {
+			public String render(final ModelData model, final String property, final ColumnData d, final int rowIndex,
+					final int colIndex, final ListStore<ModelData> store, final Grid<ModelData> grid) {
+				d.cellAttr = "rowspan='2'";
+				return "<div class='x-grid3-row-expander'>&#160;</div>";
+			}
+		});
 
-        setWidgetRowRenderer(renderer);
-    }
+		setWidgetRowRenderer(renderer);
+	}
 
-    /**
-     * Default constructor. This defers the setting of RowWidgetExpander till later.
-     */
-    public WidgetExpander() {
-        this(null);
-    }
+	/**
+	 * Default constructor. This defers the setting of RowWidgetExpander till later.
+	 */
+	public WidgetExpander() {
+		this(null);
+	}
 
-    /**
-     * Set the {@link RowWidgetRenderer}
-     * @param renderer
-     */
-    public void setWidgetRowRenderer(final WidgetRowRenderer<T> renderer) {
-        _renderer = renderer;
-    }
+	/**
+	 * Set the {@link RowWidgetRenderer}
+	 * @param renderer
+	 */
+	public void setWidgetRowRenderer(final WidgetRowRenderer<T> renderer) {
+		_renderer = renderer;
+	}
 
-    public WidgetRowRenderer<T> getWidgetRowRenderer() {
-        return _renderer;
-    }
+	public WidgetRowRenderer<T> getWidgetRowRenderer() {
+		return _renderer;
+	}
 
-    @SuppressWarnings("unchecked")
-    public void init(final Component component) {
-        this._grid = (Grid<T>) component;
+	@SuppressWarnings("unchecked")
+	public void init(final Component component) {
+		this._grid = (Grid<T>) component;
 
-        final GridView view = _grid.getView();
+		final GridView view = _grid.getView();
 
-        final GridViewConfig config = view.getViewConfig();
-        view.viewConfig = new GridViewConfig() {
-            @Override
-            public String getRowStyle(final ModelData model, final int rowIndex, final ListStore ds) {
-                final String s = "x-grid3-row-collapsed";
-                if (config != null) {
-                    return s + " " + config.getRowStyle(model, rowIndex, ds);
-                } else {
-                    return s;
-                }
-            }
-        };
+		final GridViewConfig config = view.getViewConfig();
+		view.viewConfig = new GridViewConfig() {
+			@Override
+			public String getRowStyle(final ModelData model, final int rowIndex, final ListStore ds) {
+				final String s = "x-grid3-row-collapsed";
+				if (config != null) {
+					return s + " " + config.getRowStyle(model, rowIndex, ds);
+				} else {
+					return s;
+				}
+			}
+		};
 
-        view.enableRowBody = true;
+		view.enableRowBody = true;
 
-        _grid.addListener(Events.RowClick, new Listener<GridEvent<?>>() {
-            public void handleEvent(final GridEvent<?> be) {
-                onMouseDown(be);
-            }
+		_grid.addListener(Events.RowClick, new Listener<GridEvent<?>>() {
+			public void handleEvent(final GridEvent<?> be) {
+				onMouseDown(be);
+			}
 
-        });
+		});
 
-    }
-
-
-    protected final boolean beforeExpand(final ModelData model, final Element body, final El row, final int rowIndex) {
-        return fireEvent(Events.BeforeExpand);
-    }
-
-    protected final void collapseRow(final El row) {
-        if (fireEvent(Events.BeforeCollapse)) {
-            row.replaceStyleName("x-grid3-row-expanded", "x-grid3-row-collapsed");
-            fireEvent(Events.Collapse);
-        }
-    }
+	}
 
 
-    @SuppressWarnings("unchecked")
-    protected final void expandRow(final El row) {
+	protected final boolean beforeExpand(final ModelData model, final Element body, final El row, final int rowIndex) {
+		return fireEvent(Events.BeforeExpand);
+	}
 
-        final int idx = row.dom.getPropertyInt("rowIndex");
-        final ModelData model = _grid.getStore().getAt(idx);
-
-        if (model instanceof BaseModel) {
-            ((BaseModel) model).addChangeListener(this);
-        }
-
-        final Element body = DomQuery.selectNode("div.x-grid3-row-body", row.dom);
-        body.setInnerText("");  // otherwise, there's "${body}" text in the expanded cell
-
-        if (beforeExpand(model, body, row, idx)) {
-            if (!_cachedWidgets.containsKey(model)) {
-                assert _renderer != null;
-                _cachedWidgets.put(model, _renderer.render((T)model, idx));
-            }
-
-            _grid.getView().fly(body).removeChildren();
-            final Widget w = _cachedWidgets.get(model);
-            body.appendChild(w.getElement());
-            ComponentHelper.doAttach(w);
-
-            row.replaceStyleName("x-grid3-row-collapsed", "x-grid3-row-expanded");
-            fireEvent(Events.Expand);
-        }
-    }
+	protected final void collapseRow(final El row) {
+		if (fireEvent(Events.BeforeCollapse)) {
+			row.replaceStyleName("x-grid3-row-expanded", "x-grid3-row-collapsed");
+			fireEvent(Events.Collapse);
+		}
+	}
 
 
-    protected final void onMouseDown(final GridEvent<?> e) {
-        if (e.getTarget().getClassName().equals("x-grid3-row-expander")) {
-            e.stopEvent();
-            final El row = e.getTarget(".x-grid3-row", 15);
-            toggleRow(row);
-        }
-    }
+	@SuppressWarnings("unchecked")
+	protected final void expandRow(final El row) {
 
-    protected final void toggleRow(final El row) {
-        if (row.hasStyleName("x-grid3-row-collapsed")) {
-            expandRow(row);
-        } else {
-            collapseRow(row);
-        }
-        _grid.getView().calculateVBar(false);
-    }
+		final int idx = row.dom.getPropertyInt("rowIndex");
+		final ModelData model = _grid.getStore().getAt(idx);
 
-    /**
-     * When the model is changed, invalidate the cache.
-     */
-    public void modelChanged(final ChangeEvent event) {
-        final Model model = event.getSource();
-        invalidateCache(model);
-    }
+		if (model instanceof BaseModel) {
+			((BaseModel) model).addChangeListener(this);
+		}
 
-    /**
-     * Invalidate the cache at the {@link ModelData} object.
-     * @param model
-     */
-    public void invalidateCache(final ModelData model) {
-        _cachedWidgets.remove(model);
-    }
+		final Element body = DomQuery.selectNode("div.x-grid3-row-body", row.dom);
+		//body.setInnerText("");  // otherwise, there's "${body}" text in the expanded cell
 
-    /**
-     * Invalidate all caches.
-     */
-    public void invalidateCache() {
-        _cachedWidgets.clear();
-    }
+		if (beforeExpand(model, body, row, idx)) {
+			if (!_cachedWidgets.containsKey(model)) {
+				assert _renderer != null;
+				_cachedWidgets.put(model, _renderer.render((T)model, idx));
+			}
+
+			_grid.getView().fly(body).removeChildren();
+			final Widget w = _cachedWidgets.get(model);
+			body.appendChild(w.getElement());
+			ComponentHelper.doAttach(w);
+
+			row.replaceStyleName("x-grid3-row-collapsed", "x-grid3-row-expanded");
+			fireEvent(Events.Expand);
+		}
+	}
+
+
+	protected final void onMouseDown(final GridEvent<?> e) {
+		if (e.getTarget().getClassName().equals("x-grid3-row-expander")) {
+			e.stopEvent();
+			final El row = e.getTarget(".x-grid3-row", 15);
+			toggleRow(row);
+		}
+	}
+
+	protected final void toggleRow(final El row) {
+		if (row.hasStyleName("x-grid3-row-collapsed")) {
+			expandRow(row);
+		} else {
+			collapseRow(row);
+		}
+		_grid.getView().calculateVBar(false);
+	}
+
+	/**
+	 * When the model is changed, invalidate the cache.
+	 */
+	public void modelChanged(final ChangeEvent event) {
+		final Model model = event.getSource();
+		invalidateCache(model);
+	}
+
+	/**
+	 * Invalidate the cache at the {@link ModelData} object.
+	 * @param model
+	 */
+	public void invalidateCache(final ModelData model) {
+		_cachedWidgets.remove(model);
+	}
+
+	/**
+	 * Invalidate all caches.
+	 */
+	public void invalidateCache() {
+		_cachedWidgets.clear();
+	}
 
 }

@@ -13,11 +13,11 @@
   <groupId>com.extjs.gxt.ui</groupId>
   <artifactId>expander</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
-      <groupId>gxt</groupId>
+      <groupId>com.extjs</groupId>
       <artifactId>gxt</artifactId>
       <version>${gxt.version}</version>
     </dependency>
