@@ -28,3 +28,6 @@ As of this writing, GXT 2.1.0 isn't in maven central repo. To make the demo work
     mvn install:install-file -DgroupId=gxt -DartifactId=gxt -Dversion=2.1.0 -Dpackaging=jar -Dfile=gxt.jar
 
 If you decide to use a different groupId and artifactId than "gxt", make sure this is reflected in the demo project's pom.xml file.
+
+## License ##
+GXT Widget Expander is licensed under [MIT license](http://www.opensource.org/licenses/mit-license.php)
